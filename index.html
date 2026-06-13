@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FORUS</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+}
+
+.container{
+    max-width:450px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-top:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1,h2{
+    text-align:center;
+    color:#2e7d32;
+}
+
+input,
+select,
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#2e7d32;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1b5e20;
+}
+
+.pontos{
+    text-align:center;
+    font-size:24px;
+    color:#2e7d32;
+    margin-top:15px;
+}
+
+.chat{
+    background:#e8f5e9;
+    margin-top:10px;
+    padding:10px;
+    border-radius:8px;
+}
+
+ul{
+    margin-top:15px;
+    padding-left:20px;
+}
+
+.menu button{
+    margin-bottom:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LOGIN -->
+
+    <div class="card" id="login">
+
+        <h1>FORUS 🌱</h1>
+
+        <input
+            type="text"
+            id="nome"
+            placeholder="Digite seu nome"
+        >
+
+        <button onclick="entrar()">
+            Entrar
+        </button>
+
+    </div>
+
+    <!-- APP -->
+
+    <div id="app" style="display:none;">
+
+        <!-- MENU -->
+
+        <div class="card menu">
+
+            <button onclick="mostrarTela('dashboard')">
+                🏠 Dashboard
+            </button>
+
+            <button onclick="mostrarTela('recompensas')">
+                🏆 Recompensas
+            </button>
+
+            <button onclick="mostrarTela('historico')">
+                📜 Histórico
+            </button>
+
+        </div>
+
+        <!-- DASHBOARD -->
+
+        <div class="card tela" id="dashboard">
+
+            <h2>Dashboard</h2>
+
+            <p id="usuario"></p>
+
+            <div class="pontos">
+                🌱 Pontos:
+                <span id="pontos">0</span>
+            </div>
+
+            <hr style="margin:20px 0;">
+
+            <h2>Registrar Ação</h2>
+
+            <select id="acao">
+
+                <option value="10">
+                    Reciclagem (+10)
+                </option>
+
+                <option value="20">
+                    Plantio de Árvore (+20)
+                </option>
+
+                <option value="15">
+                    Mutirão Ambiental (+15)
+                </option>
+
+            </select>
+
+            <button onclick="registrarAcao()">
+                Registrar Ação
+            </button>
+
+            <hr style="margin:20px 0;">
+
+            <h2>Assistente IA</h2>
+
+            <input
+                type="text"
+                id="pergunta"
+                placeholder="Faça uma pergunta..."
+            >
+
+            <button onclick="responderIA()">
+                Perguntar
+            </button>
+
+            <div
+                class="chat"
+                id="resposta"
+            >
+                Olá! Sou o assistente do FORUS.
+            </div>
+
+        </div>
+
+        <!-- RECOMPENSAS -->
+
+        <div
+            class="card tela"
+            id="recompensas"
+            style="display:none;"
+        >
+
+            <h2>🏆 Recompensas</h2>
+
+            <p>Caneca Sustentável - 50 pontos</p>
+
+            <button onclick="resgatar(50)">
+                Resgatar
+            </button>
+
+            <br><br>
+
+            <p>Muda de Árvore - 80 pontos</p>
+
+            <button onclick="resgatar(80)">
+                Resgatar
+            </button>
+
+            <br><br>
+
+            <p>Kit Ecológico - 120 pontos</p>
+
+            <button onclick="resgatar(120)">
+                Resgatar
+            </button>
+
+        </div>
+
+        <!-- HISTÓRICO -->
+
+        <div
+            class="card tela"
+            id="historico"
+            style="display:none;"
+        >
+
+            <h2>📜 Histórico de Atividades</h2>
+
+            <ul id="listaHistorico"></ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let pontos = 0;
+
+let historico = [];
+
+function entrar(){
+
+    let nome =
+        document.getElementById("nome").value;
+
+    if(nome === ""){
+
+        alert("Digite seu nome.");
+
+        return;
+    }
+
+    document.getElementById("login")
+        .style.display = "none";
+
+    document.getElementById("app")
+        .style.display = "block";
+
+    document.getElementById("usuario")
+        .innerHTML =
+        "Bem-vindo, " + nome + "!";
+}
+
+function mostrarTela(id){
+
+    let telas =
+        document.querySelectorAll(".tela");
+
+    telas.forEach(tela => {
+
+        tela.style.display = "none";
+
+    });
+
+    document.getElementById(id)
+        .style.display = "block";
+}
+
+function registrarAcao(){
+
+    let select =
+        document.getElementById("acao");
+
+    let valor =
+        parseInt(select.value);
+
+    let texto =
+        select.options[
+            select.selectedIndex
+        ].text;
+
+    pontos += valor;
+
+    historico.push(texto);
+
+    document.getElementById("pontos")
+        .innerHTML = pontos;
+
+    atualizarHistorico();
+
+    alert(
+        "Ação registrada com sucesso!"
+    );
+}
+
+function atualizarHistorico(){
+
+    let lista =
+        document.getElementById(
+            "listaHistorico"
+        );
+
+    lista.innerHTML = "";
+
+    historico.forEach(item => {
+
+        let li =
+            document.createElement("li");
+
+        li.textContent = item;
+
+        lista.appendChild(li);
+
+    });
+
+}
+
+function resgatar(custo){
+
+    if(pontos >= custo){
+
+        pontos -= custo;
+
+        document.getElementById("pontos")
+            .innerHTML = pontos;
+
+        alert(
+            "Recompensa resgatada com sucesso!"
+        );
+
+    }else{
+
+        alert(
+            "Você não possui pontos suficientes."
+        );
+    }
+}
+
+function responderIA(){
+
+    let pergunta =
+        document.getElementById(
+            "pergunta"
+        )
+        .value
+        .toLowerCase();
+
+    let resposta =
+        "Desculpe, não entendi.";
+
+    if(pergunta.includes("reciclagem")){
+
+        resposta =
+        "A reciclagem reduz resíduos e ajuda a preservar o meio ambiente.";
+
+    }else if(
+        pergunta.includes("árvore") ||
+        pergunta.includes("plantio")
+    ){
+
+        resposta =
+        "O plantio de árvores contribui para a redução do CO₂ na atmosfera.";
+
+    }else if(
+        pergunta.includes("pontos")
+    ){
+
+        resposta =
+        "Você ganha pontos registrando ações sustentáveis.";
+
+    }else if(
+        pergunta.includes("recompensa")
+    ){
+
+        resposta =
+        "Você pode trocar seus pontos na aba Recompensas.";
+
+    }
+
+    document.getElementById("resposta")
+        .innerHTML = resposta;
+}
+
+</script>
+
+</body>
+</html>
+
